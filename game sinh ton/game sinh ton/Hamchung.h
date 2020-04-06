@@ -13,23 +13,24 @@ static SDL_Renderer* g_screen = NULL;
 static SDL_Event g_event;
 
 //Screen
-const int SCREEN_WIDTH = 1280;
-const int SCREEN_HEIGHT = 640;
+const int FRAME_PER_SECOND = 30;
+const int SCREEN_WIDTH = 1280;//chieu rong windown
+const int SCREEN_HEIGHT = 640;//chieu cao windown
 const int SCREEN_BPP = 32;
 
 //Collor
 
-const int COLOR_KEY_R = 167;
-const int COLOR_KEY_G = 175;
-const int COLOR_KEY_B = 180;
+const int COLOR_KEY_R = 167;//ma mau nen nhan vat
+const int COLOR_KEY_G = 175;//ma mau nen nhan vat
+const int COLOR_KEY_B = 180;//ma mau nen nhan vat
 
 
-const int RENDER_DRAW_COLOR = 0xff;
+const int RENDER_DRAW_COLOR = 0xff;//mau trang
 
 #define chotrong 0
-#define TILE_SIZE 64
-#define MAPMAX_X 400
-#define MAPMAX_Y 10
+#define TILE_SIZE 64//co mat xich ban do
+#define MAPMAX_X 400//so mat xich theo X
+#define MAPMAX_Y 10//so mat xich theo Y
 
 typedef struct map
 {
@@ -39,7 +40,7 @@ typedef struct map
 	int max_X;
 	int max_Y;
 	int tile[MAPMAX_Y][MAPMAX_X];
-	const char* file_name;
+	const char* file_name;//ten duong dan
 };
 
 typedef struct input

@@ -1,7 +1,8 @@
 #include "NVchinh.h"
-#define tocdoroi 0.8
+#define tocdoroi 1
 #define tocdomax 10
-#define tocdochay 8
+#define tocdochay 10
+#define lucnhay 18
 
 NVchinh::NVchinh()
 {
@@ -21,6 +22,7 @@ NVchinh::NVchinh()
 	on_groud = false;
 	map_x_ = 0;
 	map_y_ = 0;
+	time_back = 0;
 }
 NVchinh::~NVchinh()
 {
@@ -84,14 +86,8 @@ void NVchinh::SETNVchinh_clip()
 }
 void NVchinh::show(SDL_Renderer* des)
 {
-	if (status == LEFT)
-	{
-		LoadImg("hinh//player_left.png", des);
-	}
-	else
-	{
-		LoadImg("hinh//player_right.png", des);
-	}
+	updateImg(des);
+	
 	if (input_type.left == 1 || input_type.right == 1)
 	{
 		frame++;
@@ -101,11 +97,14 @@ void NVchinh::show(SDL_Renderer* des)
 	{
 		frame = 0;
 	}
-	rect_.x = x_pos-map_x_ ;
-	rect_.y = y_pos-map_y_ ;
-	SDL_Rect* clipHT = &pic_clip[frame];
-	SDL_Rect rederquad = { rect_.x,rect_.y,width_pic,height_pic };
-	SDL_RenderCopy(des, p_object_, clipHT, &rederquad);
+	if (time_back == 0) 
+	{
+		rect_.x = x_pos - map_x_;
+		rect_.y = y_pos - map_y_;
+		SDL_Rect* clipHT = &pic_clip[frame];
+		SDL_Rect rederquad = { rect_.x,rect_.y,width_pic,height_pic };
+		SDL_RenderCopy(des, p_object_, clipHT, &rederquad);
+	}
 }
 void NVchinh::HandInputAction(SDL_Event event, SDL_Renderer* screen)
 {
@@ -113,65 +112,108 @@ void NVchinh::HandInputAction(SDL_Event event, SDL_Renderer* screen)
 	{
 		switch (event.key.keysym.sym)
 		{
-		case(SDLK_RIGHT):
+		case(SDLK_d):
 		{
 			status = RIGHT;
 			input_type.right = 1;
 			input_type.left = 0;
-
+			input_type.jump = 0;
+			updateImg(screen);
 		}
 		break;
-		case(SDLK_LEFT):
+		case(SDLK_a):
 		{
 			status = LEFT;
 			input_type.left = 1;
 			input_type.right = 0;
+			input_type.jump = 0;
+			updateImg(screen);
 		}
 		break;
+		
+		case(SDLK_w):
+		{
+			//status = JUMP;
+			input_type.jump = 1;
+			input_type.left = 0;
+			input_type.right = 0;
+		}
 		}
 	}
 	else if (event.type == SDL_KEYUP)
 	{
 		switch (event.key.keysym.sym)
 		{
-		case(SDLK_RIGHT):
+		case(SDLK_d):
 		{
 			input_type.right = 0;
+			
 
 		}
 		break;
-		case(SDLK_LEFT):
+		case(SDLK_a):
 		{
 			input_type.left = 0;
+			
 
 		}
 		break;
+		/*case(SDLK_w):
+		{
+			input_type.jump = 0;
+
+		}
+		break;*/
 		}
 	}
 }
 void NVchinh::dichuyen(map& map_data)
 {
-	x_val = 0;
-	y_val += tocdoroi;
-	if (y_val >= tocdomax)
-	{
-		y_val = tocdomax;
+	if(time_back == 0){
+		x_val = 0;
+		y_val += tocdoroi;
+		if (y_val >= tocdomax)
+		{
+			y_val = tocdomax;
+		}
+		if (input_type.left == 1)
+		{
+			x_val -= tocdochay;
+		}
+		if (input_type.right == 1)
+		{
+			x_val += tocdochay;
+		}
+		if (input_type.jump == 1)
+		{
+			if (on_groud==true)
+			{
+				y_val = -lucnhay;
+				on_groud = false;
+			}
+		
+			input_type.jump = 0;
+		}
+		vacham(map_data);
+		centerMap(map_data);
 	}
-	if (input_type.left == 1)
+	else
 	{
-		x_val -= tocdochay;
+		time_back--;
+		if (time_back == 0)
+		{
+			x_pos = 0;	
+			y_pos = 0;
+			x_val = 0;
+			y_val = 0;
+		}
+		
 	}
-	if (input_type.right == 1)
-	{
-		x_val += tocdochay;
-	}
-	vacham(map_data);
-	centerMap(map_data);
 }
 
 void NVchinh::centerMap(map& map_data)
 {
-	map_data.stratX = x_pos - (SCREEN_WIDTH/ 2);
+	map_data.stratX = x_pos - (SCREEN_WIDTH/ 3);
 	if (map_data.stratX < 0)
 	{
 		map_data.stratX = 0;
@@ -180,7 +222,7 @@ void NVchinh::centerMap(map& map_data)
 	{
 		map_data.stratX = map_data.max_X - SCREEN_WIDTH;
 	}
-	map_data.stratY = y_pos - SCREEN_HEIGHT / 2;
+	map_data.stratY = y_pos - SCREEN_HEIGHT / 3;
 	if (map_data.stratY < 0)
 	{
 		map_data.stratY = 0;
@@ -199,6 +241,7 @@ void NVchinh::vacham(map& map_data)
 	int y1 = 0;
 	int y2 = 0;
 
+	
 	//kt chieu cao
 	int height_min = height_pic < TILE_SIZE ? height_pic : TILE_SIZE;
 
@@ -218,7 +261,11 @@ void NVchinh::vacham(map& map_data)
 				x_pos -= (width_pic + 1);
 				x_val = 0;
 			}
-			else if (x_val < 0)
+			else if (map_data.tile[y1+1][x2] == chotrong || map_data.tile[y2+1][x2] == chotrong)
+				on_groud = false;
+			
+		}
+		else if (x_val < 0)
 			{
 				if (map_data.tile[y1][x1] != chotrong || map_data.tile[y2][x1] != chotrong)
 				{
@@ -226,8 +273,9 @@ void NVchinh::vacham(map& map_data)
 					//x_pos += width_pic ;
 					x_val = 0;
 				}
+				else if (map_data.tile[y1+1][x1] == chotrong || map_data.tile[y2+1][x1] == chotrong)
+					on_groud = false;
 			}
-		}
 	}
 	int width_min = width_pic < TILE_SIZE ? width_pic : TILE_SIZE;
 
@@ -275,6 +323,34 @@ void NVchinh::vacham(map& map_data)
 	}
 	else if (y_pos + height_pic > map_data.max_Y)
 	{
-		y_pos = map_data.max_Y - height_pic - 1;
+		time_back = 10;
+		//y_pos = map_data.max_Y - height_pic - 1;
+		on_groud = false;
+		status = -1;
+	}
+}
+void NVchinh::updateImg(SDL_Renderer* des)
+{
+	if (on_groud == true) 
+	{
+		if (status == LEFT)
+		{
+			LoadImg("hinh//player_left.png", des);
+		}
+		else
+		{
+			LoadImg("hinh//player_right.png", des);
+		}
+	}
+	else
+	{
+		if (status == LEFT)
+		{
+			LoadImg("hinh//jum_left.png", des);
+		}
+		else
+		{
+			LoadImg("hinh//jum_right.png", des);
+		}
 	}
 }

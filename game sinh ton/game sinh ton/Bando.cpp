@@ -4,7 +4,7 @@
 void bando::LoadMap(const char* nap)
 {
 	FILE* fp = NULL;
-	fopen_s(&fp, nap, "rb");
+	fopen_s(&fp, nap, "rb");//doc file
 	if (fp == NULL) {
 		return;
 	}
@@ -16,7 +16,7 @@ void bando::LoadMap(const char* nap)
 	{
 		for (int j = 0; j < MAPMAX_X; j++)
 		{
-			fscanf_s(fp, "%d", &ban_do.tile[i][j]);
+			fscanf_s(fp, "%d", &ban_do.tile[i][j]);//lay gia tri vao tile
 			int  val = ban_do.tile[i][j];
 			if (val > 0)
 			{
@@ -44,11 +44,10 @@ void bando::LoadTile(SDL_Renderer* screen)
 	FILE* fp = NULL;
 	for (int i = 0; i < MAXTILE; i++)
 	{
-		sprintf_s(file_img, "map/%d.png", i);
+		sprintf_s(file_img, "map/%d.png", i);//ghi chuoi vao file_img[i]
 		fopen_s(&fp, file_img, "rb");
 		if (fp == NULL) {
 			continue;
-
 		}
 		fclose(fp);
 		tile_map[i].LoadImg(file_img, screen);

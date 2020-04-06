@@ -11,17 +11,19 @@ public:
 	~NVchinh();
 	enum WAKL_TYPE
 	{
+		JUMP = 2,
 		RIGHT = 0,
 		LEFT = 1,
 	};
-	bool LoadImg(std::string path, SDL_Renderer* screen);
-	void show(SDL_Renderer* des);
-	void HandInputAction(SDL_Event event, SDL_Renderer* screen);
-	void SETNVchinh_clip();
-	void dichuyen(map& map_data);
-	void vacham(map& map_data);
-	void SetMapXY(const int map_x, const int map_y) { map_x_ = map_x; map_y_ = map_y; }
-	void centerMap(map& map_data);
+	bool LoadImg(std::string path, SDL_Renderer* screen);//load anh
+	void show(SDL_Renderer* des);//show anh
+	void HandInputAction(SDL_Event event, SDL_Renderer* screen);//nhap tu ngoai
+	void SETNVchinh_clip();//clip nhan vat
+	void dichuyen(map& map_data);//di chuyen
+	void vacham(map& map_data);//va cham
+	void SetMapXY(const int map_x, const int map_y) { map_x_ = map_x; map_y_ = map_y; }//set toa do X,Y
+	void centerMap(map& map_data);//man hinh di chuyen
+	void updateImg(SDL_Renderer* des);
 private:
 	float x_val;
 	float y_val;
@@ -40,6 +42,8 @@ private:
 	bool on_groud;
 	int map_x_;
 	int map_y_;
+
+	int time_back;
 
 };
 
