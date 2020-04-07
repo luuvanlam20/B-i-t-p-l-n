@@ -112,7 +112,7 @@ void NVchinh::HandInputAction(SDL_Event event, SDL_Renderer* screen)
 	{
 		switch (event.key.keysym.sym)
 		{
-		case(SDLK_d):
+		case(SDLK_RIGHT):
 		{
 			status = RIGHT;
 			input_type.right = 1;
@@ -121,7 +121,7 @@ void NVchinh::HandInputAction(SDL_Event event, SDL_Renderer* screen)
 			updateImg(screen);
 		}
 		break;
-		case(SDLK_a):
+		case(SDLK_LEFT):
 		{
 			status = LEFT;
 			input_type.left = 1;
@@ -131,7 +131,7 @@ void NVchinh::HandInputAction(SDL_Event event, SDL_Renderer* screen)
 		}
 		break;
 		
-		case(SDLK_w):
+		case(SDLK_UP):
 		{
 			//status = JUMP;
 			input_type.jump = 1;
@@ -144,14 +144,14 @@ void NVchinh::HandInputAction(SDL_Event event, SDL_Renderer* screen)
 	{
 		switch (event.key.keysym.sym)
 		{
-		case(SDLK_d):
+		case(SDLK_RIGHT):
 		{
 			input_type.right = 0;
 			
 
 		}
 		break;
-		case(SDLK_a):
+		case(SDLK_LEFT):
 		{
 			input_type.left = 0;
 			
@@ -213,7 +213,7 @@ void NVchinh::dichuyen(map& map_data)
 
 void NVchinh::centerMap(map& map_data)
 {
-	map_data.stratX = x_pos - (SCREEN_WIDTH/ 3);
+	map_data.stratX = x_pos - (SCREEN_WIDTH/ 2);
 	if (map_data.stratX < 0)
 	{
 		map_data.stratX = 0;
@@ -222,7 +222,7 @@ void NVchinh::centerMap(map& map_data)
 	{
 		map_data.stratX = map_data.max_X - SCREEN_WIDTH;
 	}
-	map_data.stratY = y_pos - SCREEN_HEIGHT / 3;
+	map_data.stratY = y_pos - SCREEN_HEIGHT / 2;
 	if (map_data.stratY < 0)
 	{
 		map_data.stratY = 0;
@@ -261,7 +261,7 @@ void NVchinh::vacham(map& map_data)
 				x_pos -= (width_pic + 1);
 				x_val = 0;
 			}
-			else if (map_data.tile[y1+1][x2] == chotrong || map_data.tile[y2+1][x2] == chotrong)
+			else if (map_data.tile[y1][x2] == chotrong && map_data.tile[y2+1][x2] == chotrong&& map_data.tile[y1][x2] == chotrong && map_data.tile[y2][x2] == chotrong)
 				on_groud = false;
 			
 		}
@@ -273,7 +273,7 @@ void NVchinh::vacham(map& map_data)
 					//x_pos += width_pic ;
 					x_val = 0;
 				}
-				else if (map_data.tile[y1+1][x1] == chotrong || map_data.tile[y2+1][x1] == chotrong)
+				else if (map_data.tile[y1+1][x1] == chotrong && map_data.tile[y2+1][x1] == chotrong&& map_data.tile[y1][x1] == chotrong && map_data.tile[y2][x1] == chotrong)
 					on_groud = false;
 			}
 	}
